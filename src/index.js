@@ -55,7 +55,10 @@ class ServerlessPluginOfflineDynamodbStream {
     } else if (this.serverless.config.servicePath) {
       location = this.serverless.config.servicePath;
     }
-
+    
+    const accessKeyId = process.env.AWS_ACCESS_KEY_ID || 'DEFAULT_ACCESS_KEY';
+    const secretAccesskey = process.env.AWS_SECRET_ACCESS_KEY || 'DEFAULT_SECRET';
+    
     const streams = (this.config.streams || []).map(
       ({ table, functions = [] }) => ({
         table,
@@ -64,10 +67,9 @@ class ServerlessPluginOfflineDynamodbStream {
     );
     streams.forEach(({ table, functions }) => {
       const dynamo = endpoint
-        ? new AWS.DynamoDB({ region, endpoint, accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey:  process.env.AWS_SECRET_ACCESS_KEY })
-        : new AWS.DynamoDB({ region, accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey:  process.env.AWS_SECRET_ACCESS_KEY });
+        ? new AWS.DynamoDB({ region, endpoint, accessKeyId,
+  secretAccessKey })
+        : new AWS.DynamoDB({ region, accessKeyId, secretAccessKey });
       dynamo.describeTable({ TableName: table }, (err, tableDescription) => {
         if (err) {
           throw err;
@@ -86,8 +88,7 @@ class ServerlessPluginOfflineDynamodbStream {
                 accessKeyId: process.env.AWS_ACCESS_KEY_ID,
                 secretAccessKey:  process.env.AWS_SECRET_ACCESS_KEY
               })
-            : new AWS.DynamoDBStreams({ region, accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey:  process.env.AWS_SECRET_ACCESS_KEY });
+            : new AWS.DynamoDBStreams({ region, accessKeyId, secretAccessKey });
 
           const readable = new DynamoDBStreamReadable(
             ddbStream,
