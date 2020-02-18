@@ -57,7 +57,7 @@ class ServerlessPluginOfflineDynamodbStream {
     }
     
     const accessKeyId = process.env.AWS_ACCESS_KEY_ID || 'DEFAULT_ACCESS_KEY';
-    const secretAccesskey = process.env.AWS_SECRET_ACCESS_KEY || 'DEFAULT_SECRET';
+    const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY || 'DEFAULT_SECRET';
     
     const streams = (this.config.streams || []).map(
       ({ table, functions = [] }) => ({
