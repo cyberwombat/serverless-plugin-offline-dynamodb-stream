@@ -39,11 +39,16 @@ const createHandler = (location, fn) => {
     });
 };
 
-const executeFunctions = (events = [], location, functions) => {
+const executeFunctions = (events = [], location, functions, table) => {
+
+
   return Promise.all(
     map(functions, (fn) => {
       const handler = createHandler(location, fn);
-      return handler(events);
+      return handler({ Records: events.Records.map(record => {
+        record.eventSourceARN  = `arn:aws:dynamodb:localhost:h000000000000:table/l/${table}`
+        return record
+      })});
     })
   );
 };

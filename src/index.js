@@ -103,7 +103,7 @@ class ServerlessPluginOfflineDynamodbStream {
             }
           );
 
-          const functionExecutable = FunctionExecutable(location, functions);
+          const functionExecutable = FunctionExecutable(location, functions, table);
 
           readable.on('error', (error) => {
             console.log(
